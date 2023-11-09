@@ -1,32 +1,74 @@
 import com.fazecast.jSerialComm.*;
-import java.util.Scanner;
+import javax.swing.SwingUtilities;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
+import javax.swing.JTextArea;
 
 public class SerialPortReader {
-    public static void main(String[] args) {
-        SerialPort serialPort = SerialPort.getCommPort("COM3");
+    private static SerialPort serialPort;
+    private static FileWriter csvWriter;
+
+    private static JTextArea textArea;  // Dodane pole przechowujące referencję do JTextArea
+
+    public static void initialize(JTextArea area) {
+        textArea = area;  // Przypisanie referencji do textArea
+
+        serialPort = SerialPort.getCommPort("COM3");
         serialPort.setBaudRate(9600);
         serialPort.openPort();
         serialPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
 
         try {
-            FileWriter csvWriter = new FileWriter("dane.csv");
-
-            Scanner scanner = new Scanner(serialPort.getInputStream());
-
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                System.out.println(line);
-                csvWriter.append(line).append("\n");
-            }
-
-            csvWriter.flush();
-            csvWriter.close();
+            csvWriter = new FileWriter("dane.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        serialPort.closePort();
+        // Uruchomienie wątku odczytu danych
+        new Thread(() -> readData()).start();
+    }
+
+    private static void readData() {
+        Scanner scanner = new Scanner(serialPort.getInputStream());
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            System.out.println(line);
+
+            // Aktualizacja interfejsu użytkownika w wątku UI
+            SwingUtilities.invokeLater(() -> {
+                textArea.append(line + "\n");
+            });
+
+            try {
+                csvWriter.append(line).append("\n");
+                csvWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void endDataReading() {
+        if (serialPort != null && serialPort.isOpen()) {
+            serialPort.closePort();
+        }
+        try {
+            if (csvWriter != null) {
+                csvWriter.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
+    }
+
+    public static boolean isInitialized() {
+        return serialPort != null && csvWriter != null;
+    }
+
+    public static boolean isOpen() {
+        return serialPort != null && serialPort.isOpen();
     }
 }
