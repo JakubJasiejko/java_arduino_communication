@@ -15,14 +15,14 @@ public class SerialCommunicationWithUI {
 
         JPanel buttonPanel = new JPanel();
 
-        SerialPortReader.initialize(textArea);  // Przekazanie referencji do textArea
+        SerialPortReader.initialize(textArea);
 
         if (SerialPortReader.isInitialized() && SerialPortReader.isOpen()) {
             JButton endButton = new JButton("End");
             endButton.addActionListener(e -> SwingUtilities.invokeLater(() -> SerialPortReader.endDataReading()));
             buttonPanel.add(endButton);
         } else {
-            JLabel errorLabel = new JLabel("Błąd inicjalizacji SerialReader");
+            JLabel errorLabel = new JLabel("init error SerialReader");
             buttonPanel.add(errorLabel);
         }
 

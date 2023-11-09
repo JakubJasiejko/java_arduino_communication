@@ -9,10 +9,10 @@ public class SerialPortReader {
     private static SerialPort serialPort;
     private static FileWriter csvWriter;
 
-    private static JTextArea textArea;  // Dodane pole przechowujące referencję do JTextArea
+    private static JTextArea textArea;
 
     public static void initialize(JTextArea area) {
-        textArea = area;  // Przypisanie referencji do textArea
+        textArea = area;
 
         serialPort = SerialPort.getCommPort("COM3");
         serialPort.setBaudRate(9600);
@@ -20,12 +20,12 @@ public class SerialPortReader {
         serialPort.setComPortTimeouts(SerialPort.TIMEOUT_SCANNER, 0, 0);
 
         try {
-            csvWriter = new FileWriter("dane.csv");
+            csvWriter = new FileWriter("data.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Uruchomienie wątku odczytu danych
+
         new Thread(() -> readData()).start();
     }
 
@@ -36,7 +36,7 @@ public class SerialPortReader {
             String line = scanner.nextLine();
             System.out.println(line);
 
-            // Aktualizacja interfejsu użytkownika w wątku UI
+
             SwingUtilities.invokeLater(() -> {
                 textArea.append(line + "\n");
             });
