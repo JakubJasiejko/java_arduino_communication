@@ -8,6 +8,7 @@ import javax.swing.JTextArea;
 public class SerialPortReader {
     private static SerialPort serialPort;
     private static FileWriter csvWriter;
+    private static FileWriter htmlWriter;
 
     private static JTextArea textArea;
 
@@ -21,12 +22,18 @@ public class SerialPortReader {
 
         try {
             csvWriter = new FileWriter("data.csv");
+            htmlWriter = new FileWriter("data.html");
+            initializeHtmlFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
         new Thread(() -> readData()).start();
+    }
+
+    private static void initializeHtmlFile() throws IOException {
+        htmlWriter.write("<html><head><title>Arduino Data</title></head><body><pre>\n");
+        htmlWriter.flush();
     }
 
     private static void readData() {
@@ -36,7 +43,6 @@ public class SerialPortReader {
             String line = scanner.nextLine();
             System.out.println(line);
 
-
             SwingUtilities.invokeLater(() -> {
                 textArea.append(line + "\n");
             });
@@ -44,6 +50,9 @@ public class SerialPortReader {
             try {
                 csvWriter.append(line).append("\n");
                 csvWriter.flush();
+
+                htmlWriter.append(line).append("<br>\n");
+                htmlWriter.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -58,6 +67,10 @@ public class SerialPortReader {
             if (csvWriter != null) {
                 csvWriter.close();
             }
+            if (htmlWriter != null) {
+                htmlWriter.write("</pre></body></html>");
+                htmlWriter.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,7 +78,7 @@ public class SerialPortReader {
     }
 
     public static boolean isInitialized() {
-        return serialPort != null && csvWriter != null;
+        return serialPort != null && csvWriter != null && htmlWriter != null;
     }
 
     public static boolean isOpen() {
