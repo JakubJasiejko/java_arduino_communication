@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="guicedee.services.jfreechart" type="repository">
+    <properties maven-id="com.guicedee.services:jfreechart:1.0.13.5-jre14" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jfreechart-1.0.13.5-jre14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.servlet-api-1.0.13.5-jre14.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/jfreechart-1.0.13.5-jre14-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.servlet-api-1.0.13.5-jre14-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jfreechart-1.0.13.5-jre14-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jakarta.servlet-api-1.0.13.5-jre14-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
